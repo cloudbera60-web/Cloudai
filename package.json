@@ -1,26 +1,28 @@
-FROM node:20-alpine
 
-WORKDIR /app
 
-# Install Python and build tools
-RUN apk add --no-cache python3 make g++ git
 
-# Install PM2 globally
-RUN npm install -g pm2
-
-# Copy package.json first
-COPY package.json ./
-
-# Install app dependencies
-RUN npm install
-
-# Copy the rest of the application
-COPY . .
-
-# Create temp directory
-RUN mkdir -p temp
-
-EXPOSE 8000
-
-# Run with PM2 in cluster mode
-CMD ["pm2-runtime", "start", "index.js", "--name", "vajira-md"]
+{
+"name": "web-pair",
+    "version": "0.0.1",
+    "description": "A multi functional whatsapp bot Web paircode.",
+    "main": "index.js",
+    "scripts": {
+      "start": "pm2 start index.js --deep-monitoring --attach --name vajira-md",
+      "stop": "pm2 stop vajira-md",
+     "restart": "pm2 restart vajira-md"
+    },
+  "dependencies": {
+ "@whiskeysockets/baileys": "npm:baileys@6.7.21",              
+    "@adiwajshing/keyed-db": "^0.2.4",
+    "qrcode": "^1.5.3",
+    "awesome-phonenumber": "^2.64.0",
+    "pino": "^8.1.0",
+    "phone" : "3.1.30",
+    "body-parser": "^1.20.1",
+    "express": "^4.18.1",
+    "path": "^0.12.7",
+    "megajs": "1.1.7",
+    "pm2": "^5.4.0",
+    "async-mutex":"0.4.1"
+   }
+}
