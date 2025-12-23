@@ -1,21 +1,14 @@
-FROM node:lts-bullseye
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        ffmpeg \
-        imagemagick \
-        libwebp-tools \
-        ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+FROM node:18-alpine
 
 WORKDIR /usr/src/app
 
-COPY package.json package-lock.json* ./
-
-RUN npm install && npm install -g qrcode-terminal pm2
+COPY package*.json ./
+RUN npm ci --only=production
 
 COPY . .
 
-EXPOSE 5000
+RUN mkdir -p temp
 
-CMD ["npm", "start"]
+EXPOSE $PORT
+
+CMD ["node", "index.js"]
