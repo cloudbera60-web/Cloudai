@@ -1,32 +1,34 @@
-# Use Debian-based Node.js image for better compatibility
-FROM node:18-bullseye
+FROM node:18-bullseye-slim
 
-# Create app directory
 WORKDIR /app
 
-# Install Python and build tools (required for some native modules)
+# Install required system packages
 RUN apt-get update && \
     apt-get install -y \
     python3 \
     make \
     g++ \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy package files first for better caching
-COPY package*.json ./
+# Copy package files
+COPY package.json ./
 
-# Clean npm cache and install with verbose output
-RUN npm cache clean --force && \
-    npm install --verbose
+# Update npm to latest version
+RUN npm install -g npm@latest
 
-# Copy application source
+# Clean npm cache
+RUN npm cache clean --force
+
+# Install dependencies with specific flags
+RUN npm install --legacy-peer-deps --verbose
+
+# Copy application code
 COPY . .
 
 # Create temp directory
 RUN mkdir -p temp
 
-# Expose port
 EXPOSE 8000
 
-# Start the application
 CMD ["node", "index.js"]
