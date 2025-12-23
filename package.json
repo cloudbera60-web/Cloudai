@@ -2,26 +2,23 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Install Python and build tools for native modules
 RUN apk add --no-cache python3 make g++ git
 
-# Copy package.json first for better caching
+
 COPY package.json ./
 
-# Install dependencies
+
 RUN npm install
 
-# Copy the rest of the application
-COPY . .
 
-# Create temp directory
+COPY . 
+
 RUN mkdir -p temp
 
-# Set environment variables
 ENV NODE_ENV=production
 ENV PORT=8000
 
 EXPOSE 8000
 
-# For Render, use node directly (simpler and more reliable)
+
 CMD ["node", "index.js"]
